@@ -73,10 +73,6 @@ test.describe.serial('Valid Auth Flow', () => {
 
     await test.step('Submit login form and verify welcome message', async () => {
       await loginDialog.submit();
-      page.once('dialog', dialog => {
-        console.log(`Dialog message: ${dialog.message()}`);
-        dialog.dismiss().catch(() => {});
-      });
       await expect(navBar.nameOfUserLocator).toContainText(`Welcome ${testUsername}`);
     });
   });
