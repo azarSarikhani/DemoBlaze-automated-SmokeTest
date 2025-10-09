@@ -78,6 +78,7 @@ test.describe.serial("Purchase Flow", () => {
 		});
 
 		await test.step("Click on the first monitor item", async () => {
+      await page.waitForTimeout(1000); // wait for monitors to load
 			await frontPage.clickFirstItemLink();
 		});
 
@@ -92,7 +93,7 @@ test.describe.serial("Purchase Flow", () => {
 	test("Check out cart", async () => {
 		await test.step("Navigate to Cart from navbar", async () => {
 			await navBar.clickCart();
-			await page.waitForTimeout(5000); // wait for cart to load
+			await page.waitForTimeout(3000); // wait for cart to load
 		});
 
 		await test.step("Verify cart has 3 items", async () => {
@@ -105,14 +106,14 @@ test.describe.serial("Purchase Flow", () => {
 		});
 
 		await test.step("Verify cart has 2 items after deletion", async () => {
-			await page.waitForTimeout(5000); // wait for cart to update
+			await page.waitForTimeout(3000); // wait for cart to update
 			const updatedCount = await cartPage.getCartItemCount();
 			expect(updatedCount).toBe(2);
 		});
 
 		await test.step("Click Place Order and verify dialog is visible", async () => {
 			await cartPage.clickPlaceOrder();
-			await page.waitForTimeout(5000); // wait for purchase dialog to load
+			await page.waitForTimeout(3000); // wait for purchase dialog to load
 			const isVisible = await placeOrderDialog.dialogIsVisible();
 			expect(isVisible).toBe(true);
 		});
@@ -120,7 +121,8 @@ test.describe.serial("Purchase Flow", () => {
 
 	test("Fill out and submit purchase form", async () => {
     await test.step("Expect that name and credit card is required", async () =>{
-      page.locator('button[onclick="purchaseOrder()"]');
+      placeOrderDialog.submit();
+      //page.locator('button[onclick="purchaseOrder()"]');
       const dialog = await page.waitForEvent("dialog");
       expect(dialog.message()).toBe("Please fill out Name and Creditcard.");
       await dialog.dismiss();
@@ -131,7 +133,8 @@ test.describe.serial("Purchase Flow", () => {
 		});
 
     await test.step("Expect that credit card is required", async () =>{
-      page.locator('button[onclick="purchaseOrder()"]');
+      placeOrderDialog.submit();
+      //page.locator('button[onclick="purchaseOrder()"]');
       const dialog = await page.waitForEvent("dialog");
       expect(dialog.message()).toBe("Please fill out Name and Creditcard.");
       await dialog.dismiss();
@@ -158,11 +161,11 @@ test.describe.serial("Purchase Flow", () => {
 		});
 
 		await test.step("Click Purchase button", async () => {
-			page.locator('button[onclick="purchaseOrder()"]');
+      placeOrderDialog.submit();
 		});
 
     await test.step("Expect purchase successful message", async () =>{
-      await page.waitForTimeout(5000);
+      await page.waitForTimeout(1000);
       const graphicIsVisible = await thankYouDialog.isSuccessGraphic();
       expect(graphicIsVisible).toBe(true);
       const thankYouMessageIsVisible = await thankYouDialog.isThankYouVisible();
@@ -174,7 +177,7 @@ test.describe.serial("Purchase Flow", () => {
 
     await test.step("Navigate to Cart from navbar", async () => {
 			await navBar.clickCart();
-			await page.waitForTimeout(5000); // wait for cart to load
+			await page.waitForTimeout(3000); // wait for cart to load
 		});
 
 		await test.step("Verify cart is empty", async () => {

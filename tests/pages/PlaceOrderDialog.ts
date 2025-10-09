@@ -1,4 +1,4 @@
-import { Page, Locator } from "@playwright/test";
+import { Page, expect, Locator } from "@playwright/test";
 
 export class PlaceOrderDialog {
 	private readonly nameInput: Locator;
@@ -7,7 +7,6 @@ export class PlaceOrderDialog {
 	private readonly creditCardInput: Locator;
 	private readonly monthInput: Locator;
 	private readonly yearInput: Locator;
-	private readonly purchaseButton: Locator;
 	private readonly closeButton: Locator;
 
 	constructor(private readonly page: Page) {
@@ -17,7 +16,6 @@ export class PlaceOrderDialog {
 		this.creditCardInput = page.locator("#card");
 		this.monthInput = page.locator("#month");
 		this.yearInput = page.locator("#year");
-		this.purchaseButton = page.locator('button[onclick="purchaseOrder()"]');
 		this.closeButton = page.getByRole("button", { name: "Close" });
 	}
 
@@ -47,11 +45,12 @@ export class PlaceOrderDialog {
 
 	async submit(): Promise<void> {
 		const purchaseButton = this.page.locator('button[onclick="purchaseOrder()"]');
+		await expect(this.page.locator("#orderModal")).toBeVisible();
+		await expect(purchaseButton).toBeVisible();
 		await purchaseButton.scrollIntoViewIfNeeded();
-		await purchaseButton.hover();
-		console.log("sumbmit is visible:" , await purchaseButton.isVisible() )
-		console.log("sumbmit is enabled:" , await purchaseButton.isEnabled() )
-		await purchaseButton.click({ force: true });
+		await purchaseButton.focus();
+		await expect(purchaseButton).toBeEnabled();
+		await purchaseButton.click();
 	}
 
 	async close(): Promise<void> {
@@ -59,6 +58,10 @@ export class PlaceOrderDialog {
 	}
 
 	async dialogIsVisible(): Promise<boolean> {
-		return await this.creditCardInput.isVisible() && await this.cityInput.isVisible() && await this.monthInput.isVisible();
+		return (
+			(await this.creditCardInput.isVisible()) &&
+			(await this.cityInput.isVisible()) &&
+			(await this.monthInput.isVisible())
+		);
 	}
 }
