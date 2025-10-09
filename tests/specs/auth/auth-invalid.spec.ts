@@ -31,6 +31,7 @@ test.describe("Invalid Login Attempts", () => {
 	test.beforeAll(async ({ browser }) => {
 		page = await browser.newPage();
 		await page.goto("/");
+		await page.addStyleTag({ content: '.modal.fade { transition: none !important; }' });
 		navBar = new NavBar(page);
 		loginDialog = new LoginDialog(page);
 	});

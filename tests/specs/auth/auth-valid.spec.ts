@@ -39,6 +39,8 @@ test.describe.serial("Valid Auth Flow", () => {
 
 		page = await browser.newPage();
 		await page.goto("/");
+		await page.addStyleTag({ content: '.modal.fade { transition: none !important; }' });
+
 		navBar = new NavBar(page);
 		signUpDialog = new SignUpDialog(page);
 		loginDialog = new LoginDialog(page);

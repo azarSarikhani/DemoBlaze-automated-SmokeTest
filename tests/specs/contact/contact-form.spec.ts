@@ -20,6 +20,8 @@ test.describe("Contact Form", () => {
 	test.beforeAll(async ({ browser }) => {
 		page = await browser.newPage();
 		await page.goto("/");
+		await page.addStyleTag({ content: '.modal.fade { transition: none !important; }' });
+
 		navBar = new NavBar(page);
 		contactPage = new ContactPage(page);
 	});
