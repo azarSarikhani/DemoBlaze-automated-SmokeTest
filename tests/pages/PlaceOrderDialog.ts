@@ -17,7 +17,7 @@ export class PlaceOrderDialog {
 		this.creditCardInput = page.locator("#card");
 		this.monthInput = page.locator("#month");
 		this.yearInput = page.locator("#year");
-		this.purchaseButton = page.getByRole("button", { name: "Purchase" });
+		this.purchaseButton = page.locator('button[onclick="purchaseOrder()"]');
 		this.closeButton = page.getByRole("button", { name: "Close" });
 	}
 
@@ -46,7 +46,12 @@ export class PlaceOrderDialog {
 	}
 
 	async submit(): Promise<void> {
-		await this.purchaseButton.click();
+		const purchaseButton = this.page.locator('button[onclick="purchaseOrder()"]');
+		await purchaseButton.scrollIntoViewIfNeeded();
+		await purchaseButton.hover();
+		console.log("sumbmit is visible:" , await purchaseButton.isVisible() )
+		console.log("sumbmit is enabled:" , await purchaseButton.isEnabled() )
+		await purchaseButton.click({ force: true });
 	}
 
 	async close(): Promise<void> {

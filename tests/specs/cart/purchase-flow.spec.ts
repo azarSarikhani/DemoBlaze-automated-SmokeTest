@@ -9,11 +9,12 @@
  */
 
 import { test, expect, Page } from "@playwright/test";
-import { NavBar } from '../../pages/NavBar';
+import { NavBar } from "../../pages/NavBar";
 import { FrontPage } from "../../pages/FrontPage";
 import { ProductPage } from "../../pages/ProductPage";
 import { CartPage } from "../../pages/CartPage";
 import { PlaceOrderDialog } from "../../pages/PlaceOrderDialog";
+import { ThankYouDialog } from "../../pages/ThankYouDialog";
 
 let page: Page;
 let navBar: NavBar;
@@ -21,16 +22,18 @@ let frontPage: FrontPage;
 let productPage: ProductPage;
 let cartPage: CartPage;
 let placeOrderDialog: PlaceOrderDialog;
+let thankYouDialog: ThankYouDialog;
 
 test.describe.serial("Purchase Flow", () => {
 	test.beforeAll(async ({ browser }) => {
 		page = await browser.newPage();
-    await page.goto("/");
-    navBar = new NavBar(page);
+		await page.goto("/");
+		navBar = new NavBar(page);
 		frontPage = new FrontPage(page);
 		productPage = new ProductPage(page);
 		cartPage = new CartPage(page);
 		placeOrderDialog = new PlaceOrderDialog(page);
+    thankYouDialog = new ThankYouDialog(page);
 	});
 
 	test("Add a phone to cart", async () => {
@@ -51,9 +54,8 @@ test.describe.serial("Purchase Flow", () => {
 	});
 
 	test("Add a laptop to cart", async () => {
-
 		await test.step("Navigate to Laptops category", async () => {
-      await navBar.clickHome();
+			await navBar.clickHome();
 			await frontPage.clickLaptops();
 		});
 
@@ -72,7 +74,7 @@ test.describe.serial("Purchase Flow", () => {
 	test("Add a monitor to cart", async () => {
 		await test.step("Navigate to Monitors category", async () => {
 			await navBar.clickProductStore();
-      await frontPage.clickMonitors();
+			await frontPage.clickMonitors();
 		});
 
 		await test.step("Click on the first monitor item", async () => {
@@ -87,10 +89,10 @@ test.describe.serial("Purchase Flow", () => {
 		});
 	});
 
-	test("Check out and place order", async () => {
+	test("Check out cart", async () => {
 		await test.step("Navigate to Cart from navbar", async () => {
 			await navBar.clickCart();
-      await page.waitForTimeout(5000); // wait for cart to load
+			await page.waitForTimeout(5000); // wait for cart to load
 		});
 
 		await test.step("Verify cart has 3 items", async () => {
@@ -110,10 +112,76 @@ test.describe.serial("Purchase Flow", () => {
 
 		await test.step("Click Place Order and verify dialog is visible", async () => {
 			await cartPage.clickPlaceOrder();
-      await page.waitForTimeout(5000); // wait for purchase dialog to load
+			await page.waitForTimeout(5000); // wait for purchase dialog to load
 			const isVisible = await placeOrderDialog.dialogIsVisible();
 			expect(isVisible).toBe(true);
 		});
+	});
+
+	test("Fill out and submit purchase form", async () => {
+    await test.step("Expect that name and credit card is required", async () =>{
+      page.locator('button[onclick="purchaseOrder()"]');
+      const dialog = await page.waitForEvent("dialog");
+      expect(dialog.message()).toBe("Please fill out Name and Creditcard.");
+      await dialog.dismiss();
+    })
+
+		await test.step("Fill in buyer name", async () => {
+			await placeOrderDialog.fillName("buyer");
+		});
+
+    await test.step("Expect that credit card is required", async () =>{
+      page.locator('button[onclick="purchaseOrder()"]');
+      const dialog = await page.waitForEvent("dialog");
+      expect(dialog.message()).toBe("Please fill out Name and Creditcard.");
+      await dialog.dismiss();
+    })
+
+		await test.step("Fill in country", async () => {
+			await placeOrderDialog.fillCountry("Finland");
+		});
+
+		await test.step("Fill in city", async () => {
+			await placeOrderDialog.fillCity("Helsinki");
+		});
+
+		await test.step("Fill in credit card", async () => {
+			await placeOrderDialog.fillCreditCard("1234567890");
+		});
+
+		await test.step("Fill in month", async () => {
+			await placeOrderDialog.fillMonth("1");
+		});
+
+		await test.step("Fill in year", async () => {
+			await placeOrderDialog.fillYear("2000");
+		});
+
+		await test.step("Click Purchase button", async () => {
+			page.locator('button[onclick="purchaseOrder()"]');
+		});
+
+    await test.step("Expect purchase successful message", async () =>{
+      await page.waitForTimeout(5000);
+      const graphicIsVisible = await thankYouDialog.isSuccessGraphic();
+      expect(graphicIsVisible).toBe(true);
+      const thankYouMessageIsVisible = await thankYouDialog.isThankYouVisible();
+      expect(thankYouMessageIsVisible).toBe(true);
+      expect(await thankYouDialog.isTextVisible('Card Number: 1234567890')).toBe(true);
+      expect(await thankYouDialog.isTextVisible('Name: buyer')).toBe(true);
+      thankYouDialog.clickOk();
+    })
+
+    await test.step("Navigate to Cart from navbar", async () => {
+			await navBar.clickCart();
+			await page.waitForTimeout(5000); // wait for cart to load
+		});
+
+		await test.step("Verify cart is empty", async () => {
+			const itemCount = await cartPage.getCartItemCount();
+			expect(itemCount).toBe(0);
+		});
+
 	});
 
 	test.afterAll(async () => {
