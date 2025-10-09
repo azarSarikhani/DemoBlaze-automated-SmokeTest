@@ -22,6 +22,7 @@ import { getTestCredentials } from "../../utils/testUser";
 // Load environment variables
 dotenv.config();
 
+// Page object instances shared across tests
 let page: Page;
 let navBar: NavBar;
 let signUpDialog: SignUpDialog;

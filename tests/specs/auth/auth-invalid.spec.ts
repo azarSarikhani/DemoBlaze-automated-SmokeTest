@@ -22,6 +22,7 @@ const invalidPassword = process.env.INVALID_USER_PASSWORD || "wrongpass123";
 const validUsername = process.env.VALID_USER_USERNAME || "testuser";
 const wrongPassword = process.env.VALID_USER_WRONG_PASSWORD || "incorrectPass456";
 
+// Page object instances shared across tests
 let page: Page;
 let navBar: NavBar;
 let loginDialog: LoginDialog;
