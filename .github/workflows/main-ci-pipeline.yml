@@ -38,7 +38,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run Playwright tests
-        run: npx playwright test
+        run: npx playwright test --headed
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
@@ -46,3 +46,8 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+
+      - name: Publish Playwright HTML Report
+        if: always()
+        run: |
+          echo "Playwright report available as artifact: playwright-report"

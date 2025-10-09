@@ -24,9 +24,7 @@ export class ContactPage {
 	}
 
 	async clickSend(): Promise<void> {
-		const modalContainer = this.page.locator('#exampleModal');
-  		const button = modalContainer.locator('button.btn.btn-primary', { hasText: 'Send message' });
-		//const button = this.page.locator('button[onclick="send()"]');
+		const button = this.page.locator('button[onclick="send()"]');
 		await expect(this.page.locator("#exampleModal")).toBeVisible();
 		await expect(button).toBeVisible();
 		await button.scrollIntoViewIfNeeded();
