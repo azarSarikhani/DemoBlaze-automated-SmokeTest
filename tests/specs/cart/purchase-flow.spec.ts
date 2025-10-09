@@ -149,7 +149,6 @@ test.describe.serial("Purchase Flow", () => {
 	test("Fill out and submit purchase form", async () => {
 		await test.step("Expect that name and credit card is required", async () => {
 			placeOrderDialog.submit();
-			//page.locator('button[onclick="purchaseOrder()"]');
 			const dialog = await page.waitForEvent("dialog");
 			expect(dialog.message()).toBe("Please fill out Name and Creditcard.");
 			await dialog.dismiss();
@@ -161,7 +160,6 @@ test.describe.serial("Purchase Flow", () => {
 
 		await test.step("Expect that credit card is required", async () => {
 			placeOrderDialog.submit();
-			//page.locator('button[onclick="purchaseOrder()"]');
 			const dialog = await page.waitForEvent("dialog");
 			expect(dialog.message()).toBe("Please fill out Name and Creditcard.");
 			await dialog.dismiss();
