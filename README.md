@@ -117,7 +117,7 @@ Tests run automatically on:
 
 - **HTML report is uploaded and retained for 30 days.**
 
-## ** Project StructureI**
+## **Project Structure**
 
 ```Code
 .
