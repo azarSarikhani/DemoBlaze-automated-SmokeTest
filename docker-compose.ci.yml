@@ -1,0 +1,7 @@
+services:
+  playwright-tests:
+    build: .
+    volumes:
+      - ./playwright-report:/app/playwright-report
+    environment:
+      - LOCAL_RUN=false

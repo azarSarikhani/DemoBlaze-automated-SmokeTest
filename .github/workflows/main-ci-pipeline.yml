@@ -25,7 +25,7 @@ jobs:
         uses: docker/setup-compose-action@v1
 
       - name: Run Playwright tests via Docker Compose
-        run: LOCAL_RUN=false docker compose up --abort-on-container-exit --exit-code-from playwright-tests
+        run: docker compose -f docker-compose.ci.yml up --abort-on-container-exit --exit-code-from playwright-tests
 
       - name: Upload Playwright report
         if: always()
