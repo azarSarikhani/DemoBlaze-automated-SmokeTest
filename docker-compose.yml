@@ -3,4 +3,8 @@ services:
   playwright-tests:
     build: .
     ports:
-      - "9323:9323" 
+      - "9323:9323"
+    volumes:
+      - ./playwright-report:/app/playwright-report 
+    environment:
+      - LOCAL_RUN=true
