@@ -22,7 +22,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Set up Docker Compose
-        uses: docker/setup-compose-action@v3
+        uses: docker/setup-compose-action@v2
 
       - name: Run Playwright tests via Docker Compose
         run: LOCAL_RUN=false docker compose up --abort-on-container-exit --exit-code-from playwright
