@@ -143,7 +143,9 @@ Tests run automatically on:
 ```
 
 ## **Issues**
-If you encounter flaky tests or modal-related failures in CI, refer to the modal handling logic in NavBar.ts and ContactPage.ts. These have been hardened to work reliably in headless environments.
+- There are a few explicit wait functions in the tests. This is not a reliable form of waiting for elements to load or update. Different browsers performance and different envirnments can make explicit wait times unreliable. In the future and in a real test senario where the QA team has access to website developers it should be requested that test ids are added to elements so that the test can wait for the elements with their unique ids to load instead of waiting randomly.
+
+- If you encounter flaky tests or modal-related failures in CI, refer to the modal handling logic in NavBar.ts and ContactPage.ts. These have been hardened to work reliably in headless environments.
 
 ## **Roadmap**
 This project is a proof of concept for smoke testing with Playwright. Future enhancements may include:
