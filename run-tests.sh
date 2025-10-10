@@ -2,9 +2,12 @@
 
 npx playwright test
 
-npx playwright show-report --host 0.0.0.0 --port 9323 
+echo "LOCAL_RUN is set to: $LOCAL_RUN"
 
-# Keep container alive only if LOCAL_RUN is set
+# Serve report only for local runs
 if [ "$LOCAL_RUN" = "true" ]; then
+  npx playwright show-report --host 0.0.0.0 --port 9323
   tail -f /dev/null
+else
+  echo "Skipping report server in CI. Container will stop running."
 fi
